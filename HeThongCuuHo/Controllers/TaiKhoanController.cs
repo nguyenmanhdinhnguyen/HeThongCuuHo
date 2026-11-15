@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using HeThongCuuHo.Data;
+using HeThongCuuHo.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using HeThongCuuHo.Data;
 
 namespace HeThongCuuHo.Controllers
 {
@@ -77,5 +78,71 @@ namespace HeThongCuuHo.Controllers
         {
             return Content("Bạn không có quyền truy cập chức năng này!");
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult DangKy()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DangKy(DangKyViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool trungTen = await _context.TaiKhoan
+                .AnyAsync(x => x.TenDangNhap == model.TenDangNhap);
+
+            if (trungTen)
+            {
+                ModelState.AddModelError("TenDangNhap",
+                    "Tên đăng nhập đã tồn tại!");
+                return View(model);
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var taiKhoan = new TaiKhoan
+                {
+                    TenDangNhap = model.TenDangNhap,
+                    MatKhau = model.MatKhau,
+                    VaiTro = "KhachHang",
+                    TrangThai = true
+                };
+
+                _context.TaiKhoan.Add(taiKhoan);
+                await _context.SaveChangesAsync();
+
+                var khachHang = new KhachHang
+                {
+                    MaTK = taiKhoan.MaTK,
+                    HoTen = model.HoTen,
+                    SoDienThoai = model.SoDienThoai,
+                    Email = model.Email
+                };
+
+                _context.KhachHang.Add(khachHang);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return RedirectToAction("DangNhap");
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                ModelState.AddModelError("", "Đăng ký thất bại. Vui lòng thử lại!");
+                return View(model);
+            }
+        }
     }
 }
+
