@@ -1,0 +1,888 @@
+﻿@model HeThongCuuHo.Models.QuanLyYeuCauCuaHangViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Quản lý yêu cầu";
+
+    var tongCuuHo = Model.DanhSachCuuHo.Count;
+    var tongSuaChua = Model.DanhSachSuaChua.Count;
+    var dangCho = Model.DanhSachCuuHo.Count(x =>
+        x.TrangThai == "Chờ tiếp nhận");
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý yêu cầu | NHA TRANG RESCUE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                background: #f5f6fa;
+                color: #252b36;
+                font-family: 'Inter', sans-serif;
+                font-size: 13px;
+            }
+
+            /* SIDEBAR */
+            .sidebar {
+                width: 260px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background: #182638;
+                padding: 25px 16px;
+                color: white;
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                padding: 0 10px;
+                margin-bottom: 35px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+                background: #e53935;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+
+            .brand-name {
+                font-size: 15px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                line-height: 1.4;
+            }
+
+                .brand-name span {
+                    display: block;
+                    font-size: 9px;
+                    color: #aab7c8;
+                    letter-spacing: 1.5px;
+                    font-weight: 600;
+                }
+
+            .menu-title {
+                color: #8291a5;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                padding: 15px 12px 9px;
+            }
+
+            .menu-item {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                padding: 13px 14px;
+                border-radius: 9px;
+                margin-bottom: 5px;
+                color: #c2ccda;
+                text-decoration: none;
+                font-size: 12px;
+                font-weight: 500;
+                transition: .2s;
+            }
+
+                .menu-item i {
+                    width: 17px;
+                    text-align: center;
+                    font-size: 14px;
+                }
+
+                .menu-item:hover,
+                .menu-item.active {
+                    background: #e53935;
+                    color: white;
+                }
+
+            .logout-btn {
+                width: 100%;
+                background: transparent;
+                border: none;
+                text-align: left;
+                cursor: pointer;
+            }
+
+            /* MAIN */
+            .main {
+                margin-left: 260px;
+                padding: 30px 35px;
+                min-height: 100vh;
+            }
+
+            /* TOPBAR */
+            .topbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            .page-title {
+                font-size: 23px;
+                font-weight: 800;
+                margin: 0;
+            }
+
+            .page-subtitle {
+                color: #8a94a3;
+                font-size: 12px;
+                margin-top: 6px;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+            }
+
+            .user-avatar {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: #fde8e7;
+                color: #e53935;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 17px;
+            }
+
+            .user-name {
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .user-role {
+                font-size: 10px;
+                color: #929baa;
+                margin-top: 3px;
+            }
+
+            /* WELCOME */
+            .welcome-banner {
+                background: linear-gradient(110deg, #e53935, #bd2525);
+                border-radius: 15px;
+                padding: 27px 30px;
+                color: white;
+                margin-bottom: 25px;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .welcome-banner h2 {
+                    font-size: 20px;
+                    font-weight: 800;
+                    margin-bottom: 8px;
+                }
+
+                .welcome-banner p {
+                    margin: 0;
+                    font-size: 12px;
+                    color: rgba(255,255,255,.85);
+                }
+
+            .welcome-icon {
+                position: absolute;
+                right: 35px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 75px;
+                opacity: .14;
+            }
+
+            /* STATISTICS */
+            .stat-card {
+                background: white;
+                border: 1px solid #edf0f4;
+                border-radius: 13px;
+                padding: 22px;
+                height: 100%;
+            }
+
+            .stat-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .stat-label {
+                color: #8993a2;
+                font-size: 11px;
+                font-weight: 600;
+            }
+
+            .stat-icon {
+                width: 43px;
+                height: 43px;
+                border-radius: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 17px;
+            }
+
+            .icon-red {
+                color: #e53935;
+                background: #fdebea;
+            }
+
+            .icon-blue {
+                color: #2878dc;
+                background: #eaf2ff;
+            }
+
+            .icon-orange {
+                color: #e99a25;
+                background: #fff4df;
+            }
+
+            .stat-number {
+                font-size: 27px;
+                font-weight: 800;
+                margin-top: 12px;
+            }
+
+            .stat-description {
+                color: #a0a8b4;
+                font-size: 10px;
+                margin-top: 4px;
+            }
+
+            /* CONTENT */
+            .content-card {
+                background: white;
+                border: 1px solid #edf0f4;
+                border-radius: 13px;
+                padding: 23px;
+                margin-top: 22px;
+            }
+
+            .section-heading {
+                font-size: 15px;
+                font-weight: 800;
+                margin: 0;
+            }
+
+            .section-description {
+                color: #929baa;
+                font-size: 11px;
+                margin-top: 6px;
+            }
+
+            .section-icon {
+                width: 37px;
+                height: 37px;
+                background: #fdebea;
+                color: #e53935;
+                border-radius: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 15px;
+            }
+
+            .table {
+                margin-top: 20px;
+                margin-bottom: 0;
+            }
+
+                .table thead th {
+                    background: #f8f9fb;
+                    color: #8993a2;
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: .4px;
+                    padding: 14px 12px;
+                    border-bottom: 1px solid #edf0f4;
+                    white-space: nowrap;
+                }
+
+                .table tbody td {
+                    padding: 15px 12px;
+                    border-bottom: 1px solid #f0f2f5;
+                    vertical-align: middle;
+                    font-size: 11px;
+                    color: #4b5563;
+                }
+
+                .table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .table tbody tr:hover {
+                    background: #fcfcfd;
+                }
+
+            .table-strong {
+                color: #252b36;
+                font-weight: 700;
+            }
+
+            .table-muted {
+                color: #9aa3b0;
+                font-size: 10px;
+                margin-top: 4px;
+            }
+
+            /* STATUS */
+            .status-badge {
+                display: inline-block;
+                padding: 6px 10px;
+                border-radius: 20px;
+                font-size: 10px;
+                font-weight: 700;
+                white-space: nowrap;
+                background: #eef2f7;
+                color: #64748b;
+            }
+
+            .status-waiting {
+                background: #fff4df;
+                color: #c78319;
+            }
+
+            .status-processing {
+                background: #eaf2ff;
+                color: #2878dc;
+            }
+
+            .status-completed {
+                background: #e6f7ed;
+                color: #219653;
+            }
+
+            .status-cancelled {
+                background: #fdebea;
+                color: #d93632;
+            }
+
+            /* EMPTY */
+            .empty-state {
+                text-align: center;
+                padding: 45px 15px !important;
+                color: #9aa3b0 !important;
+            }
+
+                .empty-state i {
+                    font-size: 32px;
+                    color: #d7dce4;
+                    margin-bottom: 12px;
+                }
+
+                .empty-state div {
+                    font-size: 12px;
+                }
+
+            /* RESPONSIVE */
+            @@media(max-width: 1100px) {
+                .main {
+                    padding: 25px 20px;
+                }
+            }
+
+            @@media(max-width: 900px) {
+                .sidebar {
+                    width: 75px;
+                    padding: 20px 8px;
+                }
+
+                .brand {
+                    justify-content: center;
+                    padding: 0;
+                }
+
+                .brand-name,
+                .menu-title,
+                .menu-item span {
+                    display: none;
+                }
+
+                .menu-item {
+                    justify-content: center;
+                    padding: 14px 5px;
+                }
+
+                    .menu-item i {
+                        font-size: 17px;
+                    }
+
+                .main {
+                    margin-left: 75px;
+                    padding: 22px 18px;
+                }
+            }
+
+            @@media(max-width: 600px) {
+                .main {
+                    padding: 18px 12px;
+                }
+
+                .page-title {
+                    font-size: 18px;
+                }
+
+                .welcome-banner {
+                    padding: 22px;
+                }
+
+                .welcome-icon {
+                    right: 15px;
+                    font-size: 50px;
+                }
+
+                .content-card {
+                    padding: 15px;
+                }
+
+                .user-info > div:last-child {
+                    display: none;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+
+            <div class="brand-name">
+                NHA TRANG RESCUE
+                <span>GARAGE MANAGEMENT</span>
+            </div>
+        </div>
+
+        <div class="menu-title">QUẢN LÝ CỬA HÀNG</div>
+
+        <a href="/QuanLyCuaHang/Index" class="menu-item">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Tổng quan</span>
+        </a>
+
+        <a href="/QuanLyCuaHang/YeuCauCuuHo" class="menu-item active">
+            <i class="fa-solid fa-truck-medical"></i>
+            <span>Yêu cầu cứu hộ</span>
+        </a>
+
+        <a href="/QuanLyCuaHang/DonSuaChua" class="menu-item">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>Đơn sửa chữa</span>
+        </a>
+
+        <a href="/QuanLyCuaHang/NhanVien" class="menu-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Nhân viên</span>
+        </a>
+
+        <a href="/QuanLyCuaHang/DichVu" class="menu-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Quản lý dịch vụ</span>
+        </a>
+
+        <div class="menu-title">CỬA HÀNG</div>
+
+        <a href="/QuanLyCuaHang/ThongTin" class="menu-item">
+            <i class="fa-solid fa-store"></i>
+            <span>Thông tin cửa hàng</span>
+        </a>
+
+        <div class="menu-title">TÀI KHOẢN</div>
+
+        <form asp-controller="TaiKhoan"
+              asp-action="DangXuat"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit" class="menu-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Đăng xuất</span>
+            </button>
+        </form>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <div>
+                <h1 class="page-title">Quản lý yêu cầu</h1>
+                <div class="page-subtitle">
+                    Theo dõi yêu cầu cứu hộ và đơn sửa chữa của cửa hàng
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+
+                <div>
+                    <div class="user-name">Chủ cửa hàng</div>
+                    <div class="user-role">@Model.TenCuaHang</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- WELCOME BANNER -->
+        <div class="welcome-banner">
+
+            <h2>Quản lý hoạt động cửa hàng</h2>
+
+            <p>
+                Xin chào! Theo dõi các yêu cầu cứu hộ và đơn sửa chữa
+                được gửi đến @Model.TenCuaHang.
+            </p>
+
+            <i class="fa-solid fa-screwdriver-wrench welcome-icon"></i>
+
+        </div>
+
+        <!-- STATISTICS -->
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <div class="stat-label">TỔNG YÊU CẦU CỨU HỘ</div>
+
+                        <div class="stat-icon icon-red">
+                            <i class="fa-solid fa-truck-medical"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-number">@tongCuuHo</div>
+
+                    <div class="stat-description">
+                        Yêu cầu cứu hộ khách hàng
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <div class="stat-label">ĐƠN SỬA CHỮA</div>
+
+                        <div class="stat-icon icon-blue">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-number">@tongSuaChua</div>
+
+                    <div class="stat-description">
+                        Đơn sửa chữa thuộc cửa hàng
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <div class="stat-label">CHỜ TIẾP NHẬN</div>
+
+                        <div class="stat-icon icon-orange">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-number">@dangCho</div>
+
+                    <div class="stat-description">
+                        Yêu cầu đang chờ xử lý
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RESCUE REQUESTS -->
+        <div class="content-card">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="section-icon">
+                    <i class="fa-solid fa-truck-medical"></i>
+                </div>
+
+                <div>
+                    <h5 class="section-heading">Danh sách yêu cầu cứu hộ</h5>
+
+                    <div class="section-description">
+                        Các yêu cầu cứu hộ được gửi từ khách hàng
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Mã yêu cầu</th>
+                            <th>Khách hàng</th>
+                            <th>Phương tiện</th>
+                            <th>Địa điểm</th>
+                            <th>Hình thức</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.DanhSachCuuHo.Any())
+                        {
+                            foreach (var item in Model.DanhSachCuuHo)
+                            {
+                                var statusClass =
+                                    item.TrangThai == "Chờ tiếp nhận" ? "status-waiting" :
+                                    item.TrangThai == "Đã hoàn thành" ? "status-completed" :
+                                    item.TrangThai == "Đã hủy" ? "status-cancelled" :
+                                    "status-processing";
+
+                                <tr>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            #YC-@item.MaYC
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            @item.TenKhachHang
+                                        </div>
+                                        <div class="table-muted">
+                                            @item.SoDienThoai
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            @item.BienSo
+                                        </div>
+                                        <div class="table-muted">
+                                            @item.TenPhuongTien
+                                        </div>
+                                    </td>
+
+                                    <td style="min-width:150px">
+                                        @item.DiaDiem
+                                    </td>
+
+                                    <td>
+                                        @(item.HinhThucHoTro == "SuaTaiCho"
+                                            ? "Sửa tại chỗ"
+                                            : item.HinhThucHoTro == "CuuHoVeTiem"
+                                                ? "Cứu hộ về tiệm"
+                                                : "Chưa xác định")
+                                    </td>
+
+                                    <td style="white-space:nowrap">
+                                        @(item.ThoiGianYeuCau?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge @statusClass">
+                                            @(item.TrangThai ?? "Chưa xác định")
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                @if (!string.IsNullOrWhiteSpace(item.MoTaSuCo))
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td colspan="6">
+                                            <span class="table-muted">
+                                                <i class="fa-solid fa-circle-info me-1"></i>
+                                                @item.MoTaSuCo
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <i class="fa-solid fa-inbox d-block"></i>
+                                    <div>Hiện chưa có yêu cầu cứu hộ nào.</div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- REPAIR ORDERS -->
+        <div class="content-card">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="section-icon">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+
+                <div>
+                    <h5 class="section-heading">Danh sách đơn sửa chữa</h5>
+
+                    <div class="section-description">
+                        Các đơn sửa chữa thuộc cửa hàng của bạn
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Phương tiện</th>
+                            <th>Ngày tiếp nhận</th>
+                            <th>Ngày hoàn thành</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.DanhSachSuaChua.Any())
+                        {
+                            foreach (var item in Model.DanhSachSuaChua)
+                            {
+                                var statusClass =
+                                    item.TrangThai == "Hoàn thành" ? "status-completed" :
+                                    item.TrangThai == "Đã hủy" ? "status-cancelled" :
+                                    item.TrangThai == "Chờ tiếp nhận" ? "status-waiting" :
+                                    "status-processing";
+
+                                <tr>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            #SC-@item.MaDon
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            @item.TenKhachHang
+                                        </div>
+                                        <div class="table-muted">
+                                            @item.SoDienThoai
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            @item.BienSo
+                                        </div>
+                                        <div class="table-muted">
+                                            @item.TenPhuongTien
+                                        </div>
+                                    </td>
+
+                                    <td style="white-space:nowrap">
+                                        @(item.NgayTiepNhan?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa tiếp nhận")
+                                    </td>
+
+                                    <td style="white-space:nowrap">
+                                        @(item.NgayHoanThanh?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa hoàn thành")
+                                    </td>
+
+                                    <td>
+                                        <div class="table-strong">
+                                            @(item.TongTien?.ToString("N0") ?? "Chưa có") đ
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge @statusClass">
+                                            @(item.TrangThai ?? "Chưa xác định")
+                                        </span>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <i class="fa-solid fa-file-circle-xmark d-block"></i>
+                                    <div>Hiện chưa có đơn sửa chữa nào.</div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="text-center mt-4 mb-2" style="color:#a0a8b4;font-size:10px;">
+            NHA TRANG RESCUE © 2026
+        </div>
+
+    </main>
+
+</body>
+</html>

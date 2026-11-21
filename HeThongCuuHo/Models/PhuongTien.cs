@@ -24,5 +24,9 @@ namespace HeThongCuuHo.Models
 
         [StringLength(30)]
         public string? MauSac { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string TrangThai { get; set; } = "Sẵn sàng";
     }
 }

@@ -1,0 +1,865 @@
+﻿@model HeThongCuuHo.Models.KhachHangDashboardViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Trang chủ khách hàng";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NHA TRANG RESCUE | Khách hàng</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Inter', sans-serif;
+                background: #f5f6fa;
+                color: #263445;
+            }
+
+            /* SIDEBAR */
+            .sidebar {
+                width: 260px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background: #182638;
+                color: white;
+                padding: 25px 17px;
+                z-index: 1000;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 5px 10px 30px;
+            }
+
+            .brand-icon {
+                width: 43px;
+                height: 43px;
+                background: #e53935;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .brand-name {
+                font-size: 15px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                line-height: 1.5;
+            }
+
+                .brand-name span {
+                    color: #ff5550;
+                }
+
+            .brand-subtitle {
+                color: #8290a1;
+                font-size: 9px;
+                letter-spacing: 1.1px;
+                font-weight: 600;
+            }
+
+            .menu-label {
+                color: #8290a1;
+                font-size: 10px;
+                font-weight: 700;
+                margin: 15px 12px 10px;
+                letter-spacing: 1px;
+            }
+
+            .menu-item {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                padding: 13px 14px;
+                color: #bdc7d4;
+                text-decoration: none;
+                border-radius: 9px;
+                margin-bottom: 5px;
+                font-size: 12px;
+                font-weight: 600;
+                transition: .2s;
+            }
+
+                .menu-item:hover {
+                    background: #293c53;
+                    color: white;
+                }
+
+                .menu-item.active {
+                    background: #e53935;
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(229, 57, 53, .2);
+                }
+
+                .menu-item i {
+                    width: 19px;
+                    text-align: center;
+                    font-size: 14px;
+                }
+
+            .sidebar-bottom {
+                position: absolute;
+                bottom: 22px;
+                left: 17px;
+                right: 17px;
+            }
+
+            .logout-btn {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                width: 100%;
+                padding: 13px 14px;
+                background: transparent;
+                border: 0;
+                border-radius: 9px;
+                color: #bdc7d4;
+                font-family: inherit;
+                font-size: 12px;
+                font-weight: 600;
+                text-align: left;
+                transition: .2s;
+            }
+
+                .logout-btn:hover {
+                    background: #293c53;
+                    color: #ff5550;
+                }
+
+                .logout-btn i {
+                    width: 19px;
+                    text-align: center;
+                }
+
+            /* MAIN */
+            .main {
+                margin-left: 260px;
+                padding: 30px 35px;
+                min-height: 100vh;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 28px;
+                gap: 15px;
+            }
+
+            .page-title {
+                font-size: 23px;
+                font-weight: 800;
+                margin: 0;
+                color: #182638;
+            }
+
+            .page-subtitle {
+                color: #8994a3;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: white;
+                padding: 9px 15px;
+                border-radius: 12px;
+                border: 1px solid #edf0f4;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+            }
+
+            .avatar {
+                width: 38px;
+                height: 38px;
+                background: #fff0ef;
+                color: #e53935;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+            .user-name {
+                font-size: 12px;
+                font-weight: 700;
+                color: #263445;
+            }
+
+            .user-role {
+                font-size: 10px;
+                color: #929ba8;
+                margin-top: 3px;
+            }
+
+            /* WELCOME */
+            .welcome {
+                background: linear-gradient(115deg, #e53935, #bd2525);
+                border-radius: 16px;
+                padding: 32px;
+                color: white;
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 28px;
+                box-shadow: 0 8px 22px rgba(229, 57, 53, .13);
+            }
+
+                .welcome::after {
+                    content: "\f0d1";
+                    font-family: "Font Awesome 6 Free";
+                    font-weight: 900;
+                    position: absolute;
+                    right: 55px;
+                    top: 15px;
+                    font-size: 125px;
+                    color: rgba(255,255,255,.09);
+                }
+
+                .welcome h2 {
+                    font-size: 23px;
+                    font-weight: 800;
+                    margin-bottom: 10px;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .welcome p {
+                    color: #ffe1e0;
+                    font-size: 12px;
+                    margin-bottom: 22px;
+                    position: relative;
+                    z-index: 1;
+                }
+
+            .rescue-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 9px;
+                background: white;
+                color: #e53935;
+                padding: 12px 19px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 11px;
+                font-weight: 800;
+                transition: .2s;
+                position: relative;
+                z-index: 1;
+            }
+
+                .rescue-btn:hover {
+                    background: #fff0ef;
+                    color: #bd2525;
+                    transform: translateY(-2px);
+                }
+
+            /* SECTION */
+            .section-title {
+                font-size: 15px;
+                font-weight: 800;
+                color: #263445;
+                margin-bottom: 16px;
+            }
+
+            /* STATISTICS */
+            .stat-card {
+                background: white;
+                padding: 21px;
+                border-radius: 13px;
+                border: 1px solid #edf0f4;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+                height: 100%;
+                transition: .2s;
+            }
+
+                .stat-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 7px 18px rgba(0,0,0,.05);
+                }
+
+            .stat-icon {
+                width: 43px;
+                height: 43px;
+                border-radius: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 17px;
+                margin-bottom: 15px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+                font-weight: 800;
+                color: #182638;
+                overflow-wrap: anywhere;
+            }
+
+            .stat-label {
+                font-size: 11px;
+                color: #929ba8;
+                margin-top: 5px;
+            }
+
+            /* SERVICES */
+            .service-card {
+                background: white;
+                border: 1px solid #edf0f4;
+                border-radius: 13px;
+                padding: 23px;
+                height: 100%;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+                transition: .2s;
+            }
+
+                .service-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 22px rgba(0,0,0,.055);
+                }
+
+            .service-icon {
+                width: 47px;
+                height: 47px;
+                background: #fff0ef;
+                color: #e53935;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                margin-bottom: 17px;
+            }
+
+            .service-card h6 {
+                font-size: 13px;
+                font-weight: 800;
+                margin-bottom: 8px;
+                color: #263445;
+            }
+
+            .service-card p {
+                color: #929ba8;
+                font-size: 11px;
+                line-height: 1.8;
+                margin: 0;
+            }
+
+            /* VEHICLES */
+            .vehicle-card {
+                background: white;
+                padding: 17px;
+                border: 1px solid #edf0f4;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 10px;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+                transition: .2s;
+            }
+
+                .vehicle-card:hover {
+                    border-color: #f3c5c3;
+                    transform: translateY(-2px);
+                }
+
+            .vehicle-icon {
+                width: 45px;
+                height: 45px;
+                background: #edf3fa;
+                color: #345b82;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 11px;
+                font-size: 19px;
+                flex-shrink: 0;
+            }
+
+            .vehicle-name {
+                font-size: 12px;
+                font-weight: 800;
+                color: #263445;
+            }
+
+            .vehicle-detail {
+                font-size: 10px;
+                color: #929ba8;
+                margin-top: 5px;
+            }
+
+            .vehicle-status {
+                margin-left: auto;
+                padding: 6px 11px;
+                border-radius: 20px;
+                font-size: 10px;
+                font-weight: 700;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .status-delivered {
+                background: #e8f8ef;
+                color: #239653;
+            }
+
+            .status-repair {
+                background: #fff4df;
+                color: #d58a12;
+            }
+
+            .status-pending {
+                background: #eaf3ff;
+                color: #3478c7;
+            }
+
+            .status-ready {
+                background: #e5f5f5;
+                color: #168080;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 35px 15px;
+                background: white;
+                border: 1px solid #edf0f4;
+                border-radius: 12px;
+                color: #929ba8;
+                font-size: 12px;
+            }
+
+                .empty-state i {
+                    color: #c4ccd6;
+                }
+
+            /* FOOTER */
+            .footer {
+                text-align: center;
+                color: #a0a8b3;
+                font-size: 10px;
+                padding: 25px 0 5px;
+            }
+
+            /* RESPONSIVE */
+            @@media (max-width: 900px) {
+                .sidebar {
+                    width: 70px;
+                    padding: 20px 9px;
+                }
+
+                .brand {
+                    justify-content: center;
+                    padding: 5px 0 30px;
+                }
+
+                .brand-name,
+                .brand-subtitle,
+                .menu-label,
+                .menu-item span,
+                .logout-btn span,
+                .sidebar-bottom {
+                    display: none;
+                }
+
+                .menu-item {
+                    justify-content: center;
+                    padding: 14px 5px;
+                }
+
+                    .menu-item i {
+                        font-size: 17px;
+                    }
+
+                .main {
+                    margin-left: 70px;
+                    padding: 22px;
+                }
+            }
+
+            @@media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .page-title {
+                    font-size: 19px;
+                }
+
+                .page-subtitle {
+                    font-size: 10px;
+                }
+
+                .welcome {
+                    padding: 23px;
+                }
+
+                    .welcome h2 {
+                        font-size: 19px;
+                    }
+
+                    .welcome p {
+                        max-width: 85%;
+                    }
+
+                    .welcome::after {
+                        right: 15px;
+                        top: 35px;
+                        font-size: 75px;
+                    }
+
+                .user-info {
+                    padding: 7px;
+                }
+
+                    .user-info .user-text {
+                        display: none;
+                    }
+
+                .vehicle-card {
+                    flex-wrap: wrap;
+                }
+
+                .vehicle-status {
+                    margin-left: 60px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    NHA TRANG <span>RESCUE</span>
+                </div>
+                <div class="brand-subtitle">CUSTOMER MANAGEMENT</div>
+            </div>
+        </div>
+
+        <div class="menu-label">KHÁCH HÀNG</div>
+
+        <a href="/KhachHang/Index" class="menu-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Trang chủ</span>
+        </a>
+
+        <a href="/YeuCauCuuHo/Create" class="menu-item">
+            <i class="fa-solid fa-truck-medical"></i>
+            <span>Yêu cầu cứu hộ</span>
+        </a>
+
+        <a href="/YeuCauCuuHo/Index" class="menu-item">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Lịch sử cứu hộ</span>
+        </a>
+
+        <a href="/PhuongTien/Index" class="menu-item">
+            <i class="fa-solid fa-car"></i>
+            <span>Phương tiện của tôi</span>
+        </a>
+
+        <div class="menu-label mt-4">TÀI KHOẢN</div>
+
+        <a href="/TaiKhoan/ThongTin" class="menu-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Thông tin cá nhân</span>
+        </a>
+
+        <div class="sidebar-bottom">
+            <form asp-controller="TaiKhoan"
+                  asp-action="DangXuat"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Đăng xuất</span>
+                </button>
+
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <div>
+                <h1 class="page-title">Trang chủ</h1>
+                <div class="page-subtitle">
+                    Chào mừng bạn đến với NHA TRANG RESCUE
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="user-text">
+                    <div class="user-name">@Model.HoTen</div>
+                    <div class="user-role">Khách hàng</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- WELCOME BANNER -->
+        <section class="welcome">
+
+            <h2>Xin chào, @Model.HoTen!</h2>
+
+            <p>
+                Bạn đang gặp sự cố với phương tiện?
+                NHA TRANG RESCUE luôn sẵn sàng hỗ trợ bạn.
+            </p>
+
+            <a href="/YeuCauCuuHo/Create" class="rescue-btn">
+                <i class="fa-solid fa-truck-fast"></i>
+                YÊU CẦU CỨU HỘ NGAY
+            </a>
+
+        </section>
+
+        <!-- ACCOUNT STATISTICS -->
+        <h5 class="section-title">Tổng quan tài khoản</h5>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"
+                         style="background:#fff0ef;color:#e53935">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+
+                    <div class="stat-number">
+                        @Model.TongPhuongTien
+                    </div>
+
+                    <div class="stat-label">
+                        Phương tiện đã đăng ký
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"
+                         style="background:#eaf3ff;color:#3478c7">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+
+                    <div class="stat-number" style="font-size:16px">
+                        @(string.IsNullOrEmpty(Model.SoDienThoai)
+                            ? "Chưa cập nhật"
+                            : Model.SoDienThoai)
+                    </div>
+
+                    <div class="stat-label">
+                        Số điện thoại liên hệ
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"
+                         style="background:#e9f8ef;color:#269b59">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+
+                    <div class="stat-number" style="font-size:14px">
+                        @(string.IsNullOrEmpty(Model.Email)
+                            ? "Chưa cập nhật"
+                            : Model.Email)
+                    </div>
+
+                    <div class="stat-label">
+                        Email tài khoản
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SERVICES -->
+        <h5 class="section-title">Dịch vụ hỗ trợ</h5>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+
+                    <h6>Cứu hộ xe</h6>
+
+                    <p>
+                        Gửi yêu cầu cứu hộ khi xe gặp sự cố
+                        trên đường.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+
+                    <h6>Sửa chữa phương tiện</h6>
+
+                    <p>
+                        Kết nối với các cửa hàng sửa chữa
+                        phù hợp tại Nha Trang.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+
+                    <h6>Theo dõi cứu hộ</h6>
+
+                    <p>
+                        Theo dõi trạng thái và quá trình
+                        hỗ trợ phương tiện.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- VEHICLES -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Phương tiện của tôi</h5>
+
+            <a href="/PhuongTien/Index"
+               class="text-danger text-decoration-none"
+               style="font-size:11px;font-weight:700">
+
+                Xem tất cả
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+
+            </a>
+        </div>
+
+        @if (Model.DanhSachPhuongTien != null && Model.DanhSachPhuongTien.Any())
+        {
+            foreach (var xe in Model.DanhSachPhuongTien)
+            {
+                var trangThai = string.IsNullOrWhiteSpace(xe.TrangThai)
+                    ? "Sẵn sàng"
+                    : xe.TrangThai;
+
+                string statusClass = trangThai switch
+                {
+                    "Đã giao" => "status-delivered",
+                    "Đang sửa chữa" => "status-repair",
+                    "Chờ xử lý" => "status-pending",
+                    "Sẵn sàng" => "status-ready",
+                    _ => "status-pending"
+                };
+
+                <div class="vehicle-card">
+
+                    <div class="vehicle-icon">
+                        @if (xe.TenLoai != null &&
+                             xe.TenLoai.Contains("máy", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <i class="fa-solid fa-motorcycle"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-car"></i>
+                        }
+                    </div>
+
+                    <div>
+                        <div class="vehicle-name">
+                            @xe.BienSo
+                        </div>
+
+                        <div class="vehicle-detail">
+                            @xe.HangXe @xe.DongXe
+                            <span class="mx-1">|</span>
+                            @xe.TenLoai
+                        </div>
+                    </div>
+
+                    <span class="vehicle-status @statusClass">
+                        @trangThai
+                    </span>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fa-solid fa-car-side fa-2x mb-3"></i>
+
+                <div class="fw-bold mb-2">
+                    Bạn chưa đăng ký phương tiện nào
+                </div>
+
+                <div>
+                    Hãy thêm phương tiện để sử dụng dịch vụ cứu hộ thuận tiện hơn.
+                </div>
+            </div>
+        }
+
+        <div class="footer">
+            © 2026 NHA TRANG RESCUE. ALL RIGHTS RESERVED.
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

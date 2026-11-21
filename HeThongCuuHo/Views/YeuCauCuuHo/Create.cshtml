@@ -1,0 +1,1884 @@
+﻿@model HeThongCuuHo.Models.TaoYeuCauCuuHoViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Yêu cầu cứu hộ";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gửi yêu cầu cứu hộ | NHA TRANG RESCUE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Inter', sans-serif;
+                background: #f5f6fa;
+                color: #263445;
+            }
+
+            /* SIDEBAR */
+            .sidebar {
+                width: 260px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background: #182638;
+                color: white;
+                padding: 25px 17px;
+                z-index: 1000;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 5px 10px 30px;
+            }
+
+            .brand-icon {
+                width: 43px;
+                height: 43px;
+                background: #e53935;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .brand-name {
+                font-size: 15px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                line-height: 1.5;
+            }
+
+                .brand-name span {
+                    color: #ff5550;
+                }
+
+            .brand-subtitle {
+                color: #8290a1;
+                font-size: 9px;
+                letter-spacing: 1.1px;
+                font-weight: 600;
+            }
+
+            .menu-label {
+                color: #8290a1;
+                font-size: 10px;
+                font-weight: 700;
+                margin: 15px 12px 10px;
+                letter-spacing: 1px;
+            }
+
+            .menu-item {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                padding: 13px 14px;
+                color: #bdc7d4;
+                text-decoration: none;
+                border-radius: 9px;
+                margin-bottom: 5px;
+                font-size: 12px;
+                font-weight: 600;
+                transition: .2s;
+            }
+
+                .menu-item:hover {
+                    background: #293c53;
+                    color: white;
+                }
+
+                .menu-item.active {
+                    background: #e53935;
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(229, 57, 53, .2);
+                }
+
+                .menu-item i {
+                    width: 19px;
+                    text-align: center;
+                    font-size: 14px;
+                }
+
+            .sidebar-bottom {
+                position: absolute;
+                bottom: 22px;
+                left: 17px;
+                right: 17px;
+            }
+
+            .logout-btn {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                width: 100%;
+                padding: 13px 14px;
+                background: transparent;
+                border: 0;
+                border-radius: 9px;
+                color: #bdc7d4;
+                font-family: inherit;
+                font-size: 12px;
+                font-weight: 600;
+                text-align: left;
+                transition: .2s;
+            }
+
+                .logout-btn:hover {
+                    background: #293c53;
+                    color: #ff5550;
+                }
+
+                .logout-btn i {
+                    width: 19px;
+                    text-align: center;
+                }
+
+            /* MAIN */
+            .main {
+                margin-left: 260px;
+                padding: 30px 35px;
+                min-height: 100vh;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 28px;
+                gap: 15px;
+            }
+
+            .page-title {
+                font-size: 23px;
+                font-weight: 800;
+                margin: 0;
+                color: #182638;
+            }
+
+            .page-subtitle {
+                color: #8994a3;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: white;
+                padding: 9px 15px;
+                border-radius: 12px;
+                border: 1px solid #edf0f4;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+            }
+
+            .avatar {
+                width: 38px;
+                height: 38px;
+                background: #fff0ef;
+                color: #e53935;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+            .user-name {
+                font-size: 12px;
+                font-weight: 700;
+                color: #263445;
+            }
+
+            .user-role {
+                font-size: 10px;
+                color: #929ba8;
+                margin-top: 3px;
+            }
+
+            /* WELCOME */
+            .welcome {
+                background: linear-gradient(115deg, #e53935, #bd2525);
+                border-radius: 16px;
+                padding: 27px 30px;
+                color: white;
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 27px;
+                box-shadow: 0 8px 22px rgba(229, 57, 53, .13);
+            }
+
+                .welcome::after {
+                    content: "\f0d1";
+                    font-family: "Font Awesome 6 Free";
+                    font-weight: 900;
+                    position: absolute;
+                    right: 55px;
+                    top: 10px;
+                    font-size: 110px;
+                    color: rgba(255,255,255,.09);
+                }
+
+                .welcome h2 {
+                    font-size: 21px;
+                    font-weight: 800;
+                    margin-bottom: 8px;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .welcome p {
+                    color: #ffe1e0;
+                    font-size: 12px;
+                    margin: 0;
+                    position: relative;
+                    z-index: 1;
+                }
+
+            /* FORM */
+            .form-card {
+                background: white;
+                border: 1px solid #edf0f4;
+                border-radius: 13px;
+                padding: 25px;
+                margin-bottom: 18px;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
+            }
+
+            .section-title {
+                font-size: 14px;
+                font-weight: 800;
+                color: #263445;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+            }
+
+                .section-title i {
+                    color: #e53935;
+                    margin-right: 10px;
+                    font-size: 17px;
+                }
+
+            .form-label {
+                font-size: 12px;
+                font-weight: 700;
+                color: #344256;
+                margin-bottom: 8px;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 11px 13px;
+                border-radius: 8px;
+                border: 1px solid #dfe5ed;
+                font-size: 12px;
+                color: #263445;
+            }
+
+                .form-control:focus,
+                .form-select:focus {
+                    border-color: #e53935;
+                    box-shadow: 0 0 0 3px rgba(229,57,53,.09);
+                }
+
+            .form-text {
+                font-size: 10px;
+                color: #929ba8;
+                line-height: 1.6;
+            }
+
+            .text-danger {
+                font-size: 11px;
+            }
+
+            /* VEHICLE BUTTON */
+            .btn-add-vehicle {
+                background: #182638;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 11px 16px;
+                font-size: 11px;
+                font-weight: 700;
+                white-space: nowrap;
+                transition: .2s;
+            }
+
+                .btn-add-vehicle:hover {
+                    background: #30465f;
+                    color: white;
+                }
+
+            /* MAP */
+            #map {
+                height: 370px;
+                border-radius: 11px;
+                border: 1px solid #e5eaf0;
+                z-index: 1;
+            }
+
+            .map-actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 15px;
+            }
+
+                .map-actions .btn {
+                    font-size: 11px;
+                    font-weight: 700;
+                    border-radius: 8px;
+                    padding: 10px 14px;
+                }
+
+            /* SHOP LIST */
+            .shop-list {
+                margin-top: 22px;
+            }
+
+            .shop-list-title {
+                font-size: 13px;
+                font-weight: 800;
+                color: #263445;
+                margin-bottom: 12px;
+            }
+
+            .shop-loading,
+            .shop-empty {
+                padding: 20px;
+                background: #f7f8fa;
+                border: 1px dashed #dfe5ed;
+                border-radius: 10px;
+                text-align: center;
+                font-size: 12px;
+                color: #8290a1;
+            }
+
+            .shop-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                padding: 16px;
+                border: 1px solid #e5eaf0;
+                border-radius: 11px;
+                margin-bottom: 10px;
+                background: white;
+                transition: .2s;
+            }
+
+                .shop-item:hover {
+                    border-color: #e53935;
+                    background: #fffafa;
+                }
+
+                .shop-item.selected {
+                    border: 2px solid #e53935;
+                    background: #fff6f6;
+                }
+
+            .shop-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .shop-name {
+                font-size: 13px;
+                font-weight: 800;
+                color: #263445;
+                margin-bottom: 6px;
+            }
+
+            .shop-address {
+                font-size: 11px;
+                color: #8994a3;
+                margin-bottom: 5px;
+            }
+
+            .shop-distance {
+                font-size: 11px;
+                font-weight: 700;
+                color: #e53935;
+            }
+
+            .shop-phone {
+                font-size: 11px;
+                color: #596779;
+                margin-top: 5px;
+            }
+
+            .btn-select-shop {
+                background: white;
+                border: 1px solid #e53935;
+                color: #e53935;
+                border-radius: 8px;
+                padding: 9px 13px;
+                font-size: 11px;
+                font-weight: 800;
+                white-space: nowrap;
+            }
+
+                .btn-select-shop:hover,
+                .shop-item.selected .btn-select-shop {
+                    background: #e53935;
+                    color: white;
+                }
+
+            .shop-selected-message {
+                display: none;
+                background: #eaf8ef;
+                border: 1px solid #b8e5c5;
+                color: #237443;
+                border-radius: 9px;
+                padding: 12px 15px;
+                font-size: 11px;
+                font-weight: 700;
+                margin-top: 12px;
+            }
+
+            /* SUPPORT OPTIONS */
+            .support-option {
+                display: block;
+                border: 2px solid #e5eaf0;
+                border-radius: 11px;
+                padding: 19px;
+                height: 100%;
+                cursor: pointer;
+                transition: .2s;
+            }
+
+                .support-option:hover {
+                    border-color: #e53935;
+                }
+
+                .support-option.selected {
+                    border-color: #e53935;
+                    background: #fff6f6;
+                }
+
+                .support-option input {
+                    margin-right: 8px;
+                    accent-color: #e53935;
+                }
+
+                .support-option i {
+                    font-size: 23px;
+                    color: #e53935;
+                    margin: 12px 0;
+                }
+
+                .support-option h6 {
+                    font-size: 13px;
+                    font-weight: 800;
+                    color: #263445;
+                }
+
+                .support-option p {
+                    font-size: 11px;
+                    line-height: 1.7;
+                }
+
+            .suggestion {
+                background: #fff8e8;
+                border: 1px solid #f5dfaa;
+                padding: 13px 15px;
+                border-radius: 9px;
+                margin-bottom: 17px;
+                color: #74551a;
+                font-size: 11px;
+                line-height: 1.7;
+            }
+
+            /* BUTTONS */
+            .btn-submit {
+                background: #e53935;
+                border: none;
+                color: white;
+                padding: 12px 22px;
+                border-radius: 8px;
+                font-size: 11px;
+                font-weight: 800;
+                transition: .2s;
+            }
+
+                .btn-submit:hover {
+                    background: #c92c29;
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+            .btn-back {
+                color: #596779;
+                text-decoration: none;
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+                .btn-back:hover {
+                    color: #e53935;
+                }
+
+            /* MODAL */
+            .modal-content {
+                border: none;
+                border-radius: 14px;
+                overflow: hidden;
+            }
+
+            .modal-header {
+                background: #182638;
+                color: white;
+                padding: 17px 20px;
+            }
+
+                .modal-header .modal-title {
+                    font-size: 15px;
+                }
+
+                .modal-header .btn-close {
+                    filter: invert(1);
+                }
+
+            .modal-body {
+                padding: 23px;
+            }
+
+            .modal-footer {
+                border-top: 1px solid #edf0f4;
+                padding: 15px 20px;
+            }
+
+                .modal-footer .btn {
+                    font-size: 11px;
+                    font-weight: 700;
+                    border-radius: 8px;
+                    padding: 9px 15px;
+                }
+
+            .alert {
+                font-size: 12px;
+                border-radius: 9px;
+            }
+
+            /* FOOTER */
+            .footer {
+                text-align: center;
+                color: #a0a8b3;
+                font-size: 10px;
+                padding: 20px 0 5px;
+            }
+
+            /* RESPONSIVE */
+            @@media (max-width: 900px) {
+                .sidebar {
+                    width: 70px;
+                    padding: 20px 9px;
+                }
+
+                .brand {
+                    justify-content: center;
+                    padding: 5px 0 30px;
+                }
+
+                .brand-name,
+                .brand-subtitle,
+                .menu-label,
+                .menu-item span,
+                .logout-btn span,
+                .sidebar-bottom {
+                    display: none;
+                }
+
+                .menu-item {
+                    justify-content: center;
+                    padding: 14px 5px;
+                }
+
+                    .menu-item i {
+                        font-size: 17px;
+                    }
+
+                .main {
+                    margin-left: 70px;
+                    padding: 22px;
+                }
+            }
+
+            @@media (max-width: 600px) {
+                .sidebar {
+                    width: 55px;
+                    padding: 15px 5px;
+                }
+
+                .main {
+                    margin-left: 55px;
+                    padding: 15px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .page-title {
+                    font-size: 19px;
+                }
+
+                .user-info {
+                    padding: 7px;
+                }
+
+                    .user-info .user-text {
+                        display: none;
+                    }
+
+                .welcome {
+                    padding: 22px;
+                }
+
+                    .welcome h2 {
+                        font-size: 18px;
+                    }
+
+                    .welcome::after {
+                        right: 10px;
+                        top: 35px;
+                        font-size: 70px;
+                    }
+
+                .form-card {
+                    padding: 18px;
+                }
+
+                #map {
+                    height: 300px;
+                }
+
+                .btn-add-vehicle {
+                    width: 100%;
+                }
+
+                .shop-item {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+
+                .btn-select-shop {
+                    width: 100%;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    NHA TRANG <span>RESCUE</span>
+                </div>
+                <div class="brand-subtitle">CUSTOMER MANAGEMENT</div>
+            </div>
+        </div>
+
+        <div class="menu-label">KHÁCH HÀNG</div>
+
+        <a href="/KhachHang/Index" class="menu-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Trang chủ</span>
+        </a>
+
+        <a href="/YeuCauCuuHo/Create" class="menu-item active">
+            <i class="fa-solid fa-truck-medical"></i>
+            <span>Yêu cầu cứu hộ</span>
+        </a>
+
+        <a href="/YeuCauCuuHo/Index" class="menu-item">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Lịch sử cứu hộ</span>
+        </a>
+
+        <a href="/PhuongTien/Index" class="menu-item">
+            <i class="fa-solid fa-car"></i>
+            <span>Phương tiện của tôi</span>
+        </a>
+
+        <div class="menu-label mt-4">TÀI KHOẢN</div>
+
+        <a href="/TaiKhoan/ThongTin" class="menu-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Thông tin cá nhân</span>
+        </a>
+
+        <div class="sidebar-bottom">
+            <form asp-controller="TaiKhoan"
+                  asp-action="DangXuat"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Đăng xuất</span>
+                </button>
+
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <div class="topbar">
+            <div>
+                <h1 class="page-title">Yêu cầu cứu hộ</h1>
+                <div class="page-subtitle">
+                    Gửi thông tin để NHA TRANG RESCUE hỗ trợ bạn
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="user-text">
+                    <div class="user-name">Khách hàng</div>
+                    <div class="user-role">NHA TRANG RESCUE</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WELCOME BANNER -->
+        <section class="welcome">
+            <h2>Gửi yêu cầu hỗ trợ phương tiện</h2>
+            <p>
+                Hãy cung cấp đầy đủ thông tin sự cố và vị trí để chúng tôi
+                lựa chọn phương án hỗ trợ phù hợp nhất.
+            </p>
+        </section>
+
+        @if (TempData["ThongBao"] != null)
+        {
+            <div class="alert alert-info">
+                <i class="fa-solid fa-circle-info me-2"></i>
+                @TempData["ThongBao"]
+            </div>
+        }
+
+        <form asp-controller="YeuCauCuuHo"
+              asp-action="Create"
+              method="post"
+              id="formYeuCau">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"></div>
+
+            <!-- 1. VEHICLE -->
+            <div class="form-card">
+
+                <h5 class="section-title">
+                    <i class="fa-solid fa-car"></i>
+                    1. Thông tin phương tiện
+                </h5>
+
+                <label asp-for="MaPT" class="form-label">
+                    Chọn phương tiện cần hỗ trợ
+                </label>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <div class="flex-grow-1">
+                        <select asp-for="MaPT"
+                                asp-items="Model.DanhSachPhuongTien"
+                                class="form-select"
+                                id="selectPhuongTien">
+
+                            <option value="">-- Chọn phương tiện --</option>
+
+                        </select>
+                    </div>
+
+                    <button type="button"
+                            class="btn-add-vehicle"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalThemPhuongTien">
+
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Thêm phương tiện
+
+                    </button>
+
+                </div>
+
+                <span asp-validation-for="MaPT" class="text-danger"></span>
+
+                <div class="form-text mt-2">
+                    Chưa có phương tiện? Nhấn nút Thêm phương tiện để đăng ký xe mới.
+                </div>
+
+            </div>
+
+            <!-- 2. DESCRIPTION -->
+            <div class="form-card">
+
+                <h5 class="section-title">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    2. Mô tả sự cố
+                </h5>
+
+                <label asp-for="MoTaSuCo" class="form-label">
+                    Xe của bạn đang gặp vấn đề gì?
+                </label>
+
+                <textarea asp-for="MoTaSuCo"
+                          id="moTaSuCo"
+                          class="form-control"
+                          rows="4"
+                          maxlength="500"
+                          placeholder="Ví dụ: Xe bị thủng lốp, chết máy, hỏng động cơ, không thể khởi động..."></textarea>
+
+                <span asp-validation-for="MoTaSuCo" class="text-danger"></span>
+
+                <div class="form-text mt-2">
+                    Mô tả càng chi tiết, nhân viên càng dễ chuẩn bị phương án hỗ trợ.
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="MucDoUuTien" class="form-label">
+                        Mức độ ưu tiên
+                    </label>
+
+                    <select asp-for="MucDoUuTien" class="form-select">
+                        <option value="Bình thường">Bình thường</option>
+                        <option value="Khẩn cấp">Khẩn cấp</option>
+                        <option value="Rất khẩn cấp">Rất khẩn cấp</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- 3. LOCATION -->
+            <div class="form-card">
+
+                <h5 class="section-title">
+                    <i class="fa-solid fa-location-dot"></i>
+                    3. Vị trí cần cứu hộ
+                </h5>
+
+                <div class="map-actions">
+
+                    <button type="button" class="btn btn-danger" id="btnGPS">
+                        <i class="fa-solid fa-crosshairs me-2"></i>
+                        Lấy vị trí hiện tại
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary" id="btnDefault">
+                        <i class="fa-solid fa-rotate-left me-2"></i>
+                        Về Nha Trang
+                    </button>
+
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DiaDiem" class="form-label">
+                        Địa chỉ cụ thể
+                    </label>
+
+                    <input asp-for="DiaDiem"
+                           id="diaDiem"
+                           class="form-control"
+                           maxlength="255"
+                           placeholder="Nhập địa chỉ hoặc chọn vị trí trên bản đồ">
+
+                    <span asp-validation-for="DiaDiem" class="text-danger"></span>
+                </div>
+
+                <div id="map"></div>
+
+                <!-- DANH SÁCH CỬA HÀNG -->
+                <div class="shop-list">
+
+                    <h6 class="shop-list-title">
+                        <i class="fa-solid fa-store text-danger me-2"></i>
+                        CÁC CỬA HÀNG GẦN VỊ TRÍ CỦA BẠN
+                    </h6>
+
+                    <div id="shopLoading" class="shop-loading">
+                        <i class="fa-solid fa-location-crosshairs me-2"></i>
+                        Đang tìm cửa hàng gần bạn...
+                    </div>
+
+                    <div id="shopList"></div>
+
+                    <div id="shopSelectedMessage"
+                         class="shop-selected-message">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+                        <span id="shopSelectedName"></span>
+
+                    </div>
+
+                    <span asp-validation-for="MaCH"
+                          class="text-danger"></span>
+
+                    <div class="form-text mt-2">
+                        Vui lòng chọn một cửa hàng để gửi yêu cầu cứu hộ trực tiếp đến cửa hàng đó.
+                    </div>
+
+                </div>
+
+                <input asp-for="MaCH" type="hidden" id="maCH">
+
+                <div class="form-text mt-2">
+                    Bạn có thể nhấn vào bản đồ hoặc kéo ghim để điều chỉnh vị trí chính xác.
+                </div>
+
+                <input asp-for="ViDo" type="hidden" id="viDo">
+                <input asp-for="KinhDo" type="hidden" id="kinhDo">
+
+            </div>
+
+            <!-- 4. SUPPORT TYPE -->
+            <div class="form-card">
+
+                <h5 class="section-title">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    4. Hình thức hỗ trợ
+                </h5>
+
+                <div class="suggestion" id="goiY">
+                    <i class="fa-solid fa-lightbulb me-2"></i>
+                    Hệ thống sẽ đề xuất hình thức hỗ trợ dựa trên mô tả sự cố.
+                    Bạn có thể thay đổi lựa chọn.
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="support-option" id="optionSuaTaiCho">
+
+                            <input type="radio"
+                                   asp-for="HinhThucHoTro"
+                                   value="SuaTaiCho">
+
+                            <br>
+
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+
+                            <h6>Sửa chữa tại chỗ</h6>
+
+                            <p class="text-muted mb-0">
+                                Nhân viên kỹ thuật đến vị trí của bạn để kiểm tra và sửa chữa.
+                            </p>
+
+                        </label>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="support-option" id="optionCuuHo">
+
+                            <input type="radio"
+                                   asp-for="HinhThucHoTro"
+                                   value="CuuHoVeTiem">
+
+                            <br>
+
+                            <i class="fa-solid fa-truck-pickup"></i>
+
+                            <h6>Cứu hộ đưa xe về tiệm</h6>
+
+                            <p class="text-muted mb-0">
+                                Xe được hỗ trợ vận chuyển về cửa hàng để kiểm tra và sửa chữa.
+                            </p>
+
+                        </label>
+                    </div>
+
+                </div>
+
+                <span asp-validation-for="HinhThucHoTro" class="text-danger"></span>
+
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+                <a href="/KhachHang/Index" class="btn-back">
+                    <i class="fa-solid fa-arrow-left me-2"></i>
+                    Hủy yêu cầu
+                </a>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-paper-plane me-2"></i>
+                    GỬI YÊU CẦU CỨU HỘ
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="footer">
+            © 2026 NHA TRANG RESCUE. ALL RIGHTS RESERVED.
+        </div>
+
+    </main>
+
+    <!-- MODAL ADD VEHICLE -->
+    <div class="modal fade" id="modalThemPhuongTien" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-car me-2"></i>
+                        Thêm phương tiện mới
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="thongBaoThemXe" class="alert d-none"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Loại phương tiện *</label>
+
+                        <select id="themMaLoaiPT" class="form-select">
+                            <option value="">-- Chọn loại phương tiện --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Biển số xe *</label>
+
+                        <input type="text"
+                               id="themBienSo"
+                               class="form-control"
+                               maxlength="20"
+                               placeholder="Ví dụ: 79A1-12345">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hãng xe</label>
+
+                        <input type="text"
+                               id="themHangXe"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="Ví dụ: Honda, Toyota, Yamaha...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dòng xe</label>
+
+                        <input type="text"
+                               id="themDongXe"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="Ví dụ: Vision, Vios, Wave...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Màu sắc</label>
+
+                        <input type="text"
+                               id="themMauSac"
+                               class="form-control"
+                               maxlength="50"
+                               placeholder="Ví dụ: Đen, trắng, đỏ...">
+                    </div>
+
+                    <div class="form-text">
+                        Các trường có dấu * là bắt buộc.
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            id="btnLuuPhuongTien">
+
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Lưu phương tiện
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+
+            // ==========================================
+            // THÊM PHƯƠNG TIỆN
+            // ==========================================
+
+            const selectPhuongTien = document.getElementById("selectPhuongTien");
+            const selectLoaiPT = document.getElementById("themMaLoaiPT");
+            const btnLuuPhuongTien = document.getElementById("btnLuuPhuongTien");
+            const thongBaoThemXe = document.getElementById("thongBaoThemXe");
+
+            const token = document.querySelector(
+                '#formYeuCau input[name="__RequestVerificationToken"]'
+            ).value;
+
+            async function napLoaiPhuongTien() {
+                try {
+                    const response = await fetch(
+                        '@Url.Action("LayLoaiPhuongTien", "YeuCauCuuHo")'
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Không thể tải danh sách loại phương tiện.");
+                    }
+
+                    const danhSach = await response.json();
+
+                    selectLoaiPT.innerHTML =
+                        '<option value="">-- Chọn loại phương tiện --</option>';
+
+                    danhSach.forEach(loai => {
+                        const option = document.createElement("option");
+                        option.value = loai.maLoaiPT;
+                        option.textContent = loai.tenLoai;
+                        selectLoaiPT.appendChild(option);
+                    });
+                } catch (error) {
+                    hienThongBaoThemXe(error.message, false);
+                }
+            }
+
+            function hienThongBaoThemXe(message, thanhCong) {
+                thongBaoThemXe.className = thanhCong
+                    ? "alert alert-success"
+                    : "alert alert-danger";
+
+                thongBaoThemXe.textContent = message;
+            }
+
+            document.getElementById("modalThemPhuongTien")
+                .addEventListener("show.bs.modal", function () {
+                    thongBaoThemXe.classList.add("d-none");
+                    napLoaiPhuongTien();
+                });
+
+            btnLuuPhuongTien.addEventListener("click", async function () {
+                const maLoaiPT = selectLoaiPT.value;
+                const bienSo = document.getElementById("themBienSo").value.trim();
+                const hangXe = document.getElementById("themHangXe").value.trim();
+                const dongXe = document.getElementById("themDongXe").value.trim();
+                const mauSac = document.getElementById("themMauSac").value.trim();
+
+                thongBaoThemXe.classList.add("d-none");
+
+                if (!maLoaiPT) {
+                    hienThongBaoThemXe("Vui lòng chọn loại phương tiện.", false);
+                    return;
+                }
+
+                if (!bienSo) {
+                    hienThongBaoThemXe("Vui lòng nhập biển số xe.", false);
+                    return;
+                }
+
+                const duLieu = new URLSearchParams();
+                duLieu.append("maLoaiPT", maLoaiPT);
+                duLieu.append("bienSo", bienSo);
+                duLieu.append("hangXe", hangXe);
+                duLieu.append("dongXe", dongXe);
+                duLieu.append("mauSac", mauSac);
+
+                btnLuuPhuongTien.disabled = true;
+                btnLuuPhuongTien.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Đang lưu...';
+
+                try {
+                    const response = await fetch(
+                        '@Url.Action("ThemPhuongTien", "YeuCauCuuHo")',
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                                "RequestVerificationToken": token
+                            },
+                            body: duLieu.toString()
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || "Không thể thêm phương tiện.");
+                    }
+
+                    const option = document.createElement("option");
+                    option.value = data.maPT;
+                    option.textContent = data.text;
+
+                    selectPhuongTien.appendChild(option);
+                    selectPhuongTien.value = data.maPT;
+
+                    hienThongBaoThemXe(data.message, true);
+
+                    document.getElementById("themBienSo").value = "";
+                    document.getElementById("themHangXe").value = "";
+                    document.getElementById("themDongXe").value = "";
+                    document.getElementById("themMauSac").value = "";
+                    selectLoaiPT.value = "";
+
+                    setTimeout(function () {
+                        const modalElement = document.getElementById("modalThemPhuongTien");
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+
+                        if (modal) modal.hide();
+                    }, 900);
+
+                } catch (error) {
+                    hienThongBaoThemXe(error.message, false);
+                } finally {
+                    btnLuuPhuongTien.disabled = false;
+                    btnLuuPhuongTien.innerHTML =
+                        '<i class="fa-solid fa-floppy-disk me-2"></i>Lưu phương tiện';
+                }
+            });
+
+
+            // ==========================================
+            // BẢN ĐỒ VÀ VỊ TRÍ
+            // ==========================================
+
+            const viDoInput = document.getElementById("viDo");
+            const kinhDoInput = document.getElementById("kinhDo");
+            const diaDiemInput = document.getElementById("diaDiem");
+            const moTaInput = document.getElementById("moTaSuCo");
+            const goiY = document.getElementById("goiY");
+
+            const maCHInput = document.getElementById("maCH");
+            const shopList = document.getElementById("shopList");
+            const shopLoading = document.getElementById("shopLoading");
+            const shopSelectedMessage = document.getElementById("shopSelectedMessage");
+            const shopSelectedName = document.getElementById("shopSelectedName");
+
+            const viTriMacDinh = [12.2388, 109.1967];
+
+            let lanTimCuaHang = 0;
+            let timeoutTimCuaHang = null;
+
+            // QUAN TRỌNG: Khởi tạo map trước khi tạo layerGroup
+            const map = L.map("map").setView(viTriMacDinh, 14);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Marker vị trí khách hàng
+            const marker = L.marker(viTriMacDinh, {
+                draggable: true
+            }).addTo(map);
+
+            // Nhóm chứa các ghim cửa hàng
+            const nhomGhimCuaHang = L.layerGroup().addTo(map);
+
+
+            // ==========================================
+            // CHỐNG LỖI HTML
+            // ==========================================
+
+            function escapeHtml(value) {
+                return String(value ?? "").replace(/[&<>"']/g, function (char) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+                    }[char];
+                });
+            }
+
+
+            // ==========================================
+            // HIỂN THỊ GHIM CỬA HÀNG
+            // ==========================================
+
+            function hienThiGhimCuaHang(danhSach) {
+
+                // Xóa ghim cũ
+                nhomGhimCuaHang.clearLayers();
+
+                danhSach.forEach(function (shop, index) {
+
+                    if (shop.viDo == null || shop.kinhDo == null) {
+                        return;
+                    }
+
+                    const lat = Number(shop.viDo);
+                    const lng = Number(shop.kinhDo);
+
+                    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                        return;
+                    }
+
+                    // Ghim cửa hàng gần nhất màu đỏ
+                    const mauGhim = index === 0 ? "#e53935" : "#263b55";
+
+                    const iconGhim = L.divIcon({
+                        className: "",
+                        html: `
+                            <div style="
+                                width:36px;
+                                height:36px;
+                                background:${mauGhim};
+                                border:3px solid white;
+                                border-radius:50% 50% 50% 0;
+                                transform:rotate(-45deg);
+                                box-shadow:0 3px 8px rgba(0,0,0,.35);
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                            ">
+                                <i class="fa-solid fa-store" style="
+                                    color:white;
+                                    font-size:14px;
+                                    transform:rotate(45deg);
+                                "></i>
+                            </div>
+                        `,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36],
+                        popupAnchor: [0, -36]
+                    });
+
+                    const markerCuaHang = L.marker(
+                        [lat, lng],
+                        { icon: iconGhim }
+                    );
+
+                    const popup = `
+                        <div style="min-width:190px;font-family:Inter,sans-serif;">
+                            <div style="font-weight:800;font-size:13px;color:#263445;margin-bottom:7px;">
+                                ${index === 0 ? '⭐ ' : ''}
+                                ${escapeHtml(shop.tenCH || 'Cửa hàng')}
+                            </div>
+
+                            <div style="font-size:11px;color:#687789;margin-bottom:6px;">
+                                <i class="fa-solid fa-location-dot text-danger"></i>
+                                ${escapeHtml(shop.diaChi || 'Chưa có địa chỉ')}
+                            </div>
+
+                            <div style="font-size:11px;color:#e53935;font-weight:700;margin-bottom:6px;">
+                                <i class="fa-solid fa-route"></i>
+                                ${Number(shop.khoangCach || 0).toFixed(2)} km
+                            </div>
+
+                            <div style="font-size:11px;color:#687789;">
+                                <i class="fa-solid fa-phone"></i>
+                                ${escapeHtml(shop.soDienThoai || 'Chưa có số điện thoại')}
+                            </div>
+                        </div>
+                    `;
+
+                    markerCuaHang.bindPopup(popup);
+
+                    // Thêm ghim vào bản đồ
+                    markerCuaHang.addTo(nhomGhimCuaHang);
+                });
+            }
+
+
+            // ==========================================
+            // CẬP NHẬT VỊ TRÍ KHÁCH HÀNG
+            // ==========================================
+
+            function capNhatViTri(lat, lng) {
+
+                marker.setLatLng([lat, lng]);
+
+                viDoInput.value = lat.toFixed(7);
+                kinhDoInput.value = lng.toFixed(7);
+
+                // Xóa lựa chọn cửa hàng cũ
+                maCHInput.value = "";
+                shopSelectedMessage.style.display = "none";
+
+                // Tìm cửa hàng theo vị trí mới
+                timCuaHangGanDay(lat, lng);
+            }
+
+
+            // ==========================================
+            // TÌM CỬA HÀNG GẦN VỊ TRÍ
+            // ==========================================
+
+            async function timCuaHangGanDay(lat, lng) {
+
+                clearTimeout(timeoutTimCuaHang);
+
+                const lanHienTai = ++lanTimCuaHang;
+
+                shopList.innerHTML = "";
+
+                // Xóa ghim cũ trong lúc tìm kiếm
+                nhomGhimCuaHang.clearLayers();
+
+                shopLoading.style.display = "block";
+                shopLoading.innerHTML =
+                    '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang tìm cửa hàng gần bạn...';
+
+                timeoutTimCuaHang = setTimeout(async function () {
+
+                    try {
+
+                        const url =
+                            '@Url.Action("LayCuaHangGanDay", "YeuCauCuuHo")' +
+                            `?viDo=${encodeURIComponent(lat)}` +
+                            `&kinhDo=${encodeURIComponent(lng)}`;
+
+                        const response = await fetch(url);
+
+                        const data = await response.json();
+
+                        // Bỏ qua kết quả của vị trí cũ
+                        if (lanHienTai !== lanTimCuaHang) {
+                            return;
+                        }
+
+                        if (!response.ok || !data.success) {
+                            throw new Error(data.message || "Không thể tìm cửa hàng.");
+                        }
+
+                        shopLoading.style.display = "none";
+
+                        const danhSach = data.danhSach || [];
+
+                        if (danhSach.length === 0) {
+
+                            nhomGhimCuaHang.clearLayers();
+
+                            shopList.innerHTML = `
+                                <div class="shop-empty">
+                                    <i class="fa-solid fa-store-slash fa-2x mb-2"></i>
+                                    <div>Không tìm thấy cửa hàng nào có tọa độ hợp lệ.</div>
+                                    <div class="mt-2">Vui lòng thử chọn vị trí khác.</div>
+                                </div>
+                            `;
+
+                            return;
+                        }
+
+                        // QUAN TRỌNG: HIỂN THỊ GHIM CỬA HÀNG TRÊN BẢN ĐỒ
+                        hienThiGhimCuaHang(danhSach);
+
+                        // Hiển thị danh sách cửa hàng bên dưới bản đồ
+                        danhSach.forEach(function (shop, index) {
+
+                            const item = document.createElement("div");
+                            item.className = "shop-item";
+
+                            const info = document.createElement("div");
+                            info.className = "shop-info";
+
+                            const name = document.createElement("div");
+                            name.className = "shop-name";
+                            name.textContent = shop.tenCH || "Cửa hàng";
+
+                            if (index === 0) {
+                                const badge = document.createElement("span");
+                                badge.className = "badge bg-danger ms-2";
+                                badge.textContent = "Gần nhất";
+                                name.appendChild(badge);
+                            }
+
+                            const address = document.createElement("div");
+                            address.className = "shop-address";
+
+                            const addressIcon = document.createElement("i");
+                            addressIcon.className = "fa-solid fa-location-dot me-1";
+
+                            address.appendChild(addressIcon);
+                            address.appendChild(
+                                document.createTextNode(shop.diaChi || "Chưa có địa chỉ")
+                            );
+
+                            const distance = document.createElement("div");
+                            distance.className = "shop-distance";
+
+                            const distanceIcon = document.createElement("i");
+                            distanceIcon.className = "fa-solid fa-route me-1";
+
+                            distance.appendChild(distanceIcon);
+                            distance.appendChild(
+                                document.createTextNode(
+                                    Number(shop.khoangCach || 0).toFixed(2) +
+                                    " km từ vị trí của bạn"
+                                )
+                            );
+
+                            const phone = document.createElement("div");
+                            phone.className = "shop-phone";
+
+                            if (shop.soDienThoai) {
+                                const phoneIcon = document.createElement("i");
+                                phoneIcon.className = "fa-solid fa-phone me-1";
+
+                                phone.appendChild(phoneIcon);
+                                phone.appendChild(
+                                    document.createTextNode(shop.soDienThoai)
+                                );
+                            }
+
+                            info.appendChild(name);
+                            info.appendChild(address);
+                            info.appendChild(distance);
+                            info.appendChild(phone);
+
+                            const button = document.createElement("button");
+                            button.type = "button";
+                            button.className = "btn-select-shop";
+                            button.innerHTML =
+                                '<i class="fa-solid fa-check me-1"></i> Chọn tiệm';
+
+                            button.addEventListener("click", function () {
+
+                                document.querySelectorAll(".shop-item").forEach(function (el) {
+
+                                    el.classList.remove("selected");
+
+                                    const oldButton = el.querySelector(".btn-select-shop");
+
+                                    if (oldButton) {
+                                        oldButton.innerHTML =
+                                            '<i class="fa-solid fa-check me-1"></i> Chọn tiệm';
+                                    }
+                                });
+
+                                item.classList.add("selected");
+
+                                button.innerHTML =
+                                    '<i class="fa-solid fa-check-circle me-1"></i> Đã chọn';
+
+                                maCHInput.value = shop.maCH;
+
+                                shopSelectedMessage.style.display = "block";
+                                shopSelectedName.textContent =
+                                    "Bạn đã chọn " + shop.tenCH;
+                            });
+
+                            item.appendChild(info);
+                            item.appendChild(button);
+
+                            shopList.appendChild(item);
+                        });
+
+                    } catch (error) {
+
+                        if (lanHienTai !== lanTimCuaHang) {
+                            return;
+                        }
+
+                        nhomGhimCuaHang.clearLayers();
+
+                        shopLoading.style.display = "block";
+                        shopLoading.innerHTML =
+                            '<i class="fa-solid fa-triangle-exclamation me-2"></i>' +
+                            'Không thể tải danh sách cửa hàng. ' +
+                            escapeHtml(error.message);
+                    }
+
+                }, 400);
+            }
+
+
+            // ==========================================
+            // LẤY ĐỊA CHỈ TỪ TỌA ĐỘ
+            // ==========================================
+
+            async function layDiaChi(lat, lng) {
+
+                try {
+
+                    const url =
+                        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+                    const response = await fetch(url);
+
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+
+                    if (data.display_name) {
+                        diaDiemInput.value = data.display_name.substring(0, 255);
+                    }
+
+                } catch (error) {
+                    console.log("Không thể lấy địa chỉ:", error);
+                }
+            }
+
+
+            // ==========================================
+            // NHẤN BẢN ĐỒ
+            // ==========================================
+
+            map.on("click", function (e) {
+
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+
+                capNhatViTri(lat, lng);
+                layDiaChi(lat, lng);
+            });
+
+
+            // ==========================================
+            // KÉO GHIM VỊ TRÍ
+            // ==========================================
+
+            marker.on("dragend", function () {
+
+                const position = marker.getLatLng();
+
+                capNhatViTri(position.lat, position.lng);
+                layDiaChi(position.lat, position.lng);
+            });
+
+
+            // ==========================================
+            // LẤY VỊ TRÍ GPS
+            // ==========================================
+
+            document.getElementById("btnGPS").addEventListener("click", function () {
+
+                const button = this;
+
+                if (!navigator.geolocation) {
+                    alert("Trình duyệt không hỗ trợ định vị GPS.");
+                    return;
+                }
+
+                button.disabled = true;
+                button.innerHTML = "Đang lấy vị trí...";
+
+                navigator.geolocation.getCurrentPosition(
+
+                    function (position) {
+
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        map.setView([lat, lng], 17);
+
+                        capNhatViTri(lat, lng);
+                        layDiaChi(lat, lng);
+
+                        button.disabled = false;
+                        button.innerHTML =
+                            '<i class="fa-solid fa-crosshairs me-2"></i>Lấy vị trí hiện tại';
+                    },
+
+                    function () {
+
+                        alert("Không lấy được vị trí. Hãy cấp quyền định vị hoặc chọn trên bản đồ.");
+
+                        button.disabled = false;
+                        button.innerHTML =
+                            '<i class="fa-solid fa-crosshairs me-2"></i>Lấy vị trí hiện tại';
+                    },
+
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000
+                    }
+                );
+            });
+
+
+            // ==========================================
+            // TRỞ VỀ VỊ TRÍ MẶC ĐỊNH
+            // ==========================================
+
+            document.getElementById("btnDefault").addEventListener("click", function () {
+
+                map.setView(viTriMacDinh, 14);
+
+                capNhatViTri(viTriMacDinh[0], viTriMacDinh[1]);
+                layDiaChi(viTriMacDinh[0], viTriMacDinh[1]);
+            });
+
+
+            // ==========================================
+            // GỢI Ý HÌNH THỨC HỖ TRỢ
+            // ==========================================
+
+            function capNhatGiaoDienHoTro() {
+
+                const selected = document.querySelector(
+                    'input[name="HinhThucHoTro"]:checked'
+                );
+
+                document.getElementById("optionSuaTaiCho").classList.remove("selected");
+                document.getElementById("optionCuuHo").classList.remove("selected");
+
+                if (selected) {
+
+                    if (selected.value === "SuaTaiCho") {
+                        document.getElementById("optionSuaTaiCho").classList.add("selected");
+                    } else {
+                        document.getElementById("optionCuuHo").classList.add("selected");
+                    }
+                }
+            }
+
+            function deXuatHoTro() {
+
+                const moTa = moTaInput.value.toLowerCase();
+
+                const tuKhoaNang = [
+                    "không thể di chuyển",
+                    "khong the di chuyen",
+                    "không nổ máy",
+                    "khong no may",
+                    "hỏng động cơ",
+                    "hong dong co",
+                    "tai nạn",
+                    "tai nan",
+                    "lật xe",
+                    "lat xe",
+                    "gãy trục",
+                    "gay truc",
+                    "kẹt bánh",
+                    "ket banh"
+                ];
+
+                const canCuuHo = tuKhoaNang.some(tuKhoa =>
+                    moTa.includes(tuKhoa)
+                );
+
+                const luaChon = canCuuHo
+                    ? "CuuHoVeTiem"
+                    : "SuaTaiCho";
+
+                document.querySelector(
+                    `input[name="HinhThucHoTro"][value="${luaChon}"]`
+                ).checked = true;
+
+                goiY.innerHTML = canCuuHo
+                    ? '<i class="fa-solid fa-truck-pickup me-2"></i>Đề xuất: Cứu hộ đưa xe về tiệm vì mô tả có dấu hiệu xe gặp sự cố nghiêm trọng. Bạn có thể thay đổi lựa chọn.'
+                    : '<i class="fa-solid fa-lightbulb me-2"></i>Đề xuất: Sửa chữa tại chỗ. Nếu xe không thể di chuyển, bạn có thể chọn cứu hộ đưa xe về tiệm.';
+
+                capNhatGiaoDienHoTro();
+            }
+
+            document.querySelectorAll('input[name="HinhThucHoTro"]')
+                .forEach(input => {
+                    input.addEventListener("change", capNhatGiaoDienHoTro);
+                });
+
+            moTaInput.addEventListener("input", deXuatHoTro);
+
+
+            // ==========================================
+            // KIỂM TRA TRƯỚC KHI GỬI
+            // ==========================================
+
+            document.getElementById("formYeuCau")
+                .addEventListener("submit", function (e) {
+
+                    if (!maCHInput.value) {
+
+                        e.preventDefault();
+
+                        alert("Vui lòng chọn một cửa hàng cứu hộ trước khi gửi yêu cầu.");
+
+                        document.querySelector(".shop-list").scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+
+                        return;
+                    }
+
+                    if (!viDoInput.value || !kinhDoInput.value) {
+
+                        e.preventDefault();
+
+                        alert("Vui lòng chọn vị trí cứu hộ trên bản đồ.");
+
+                        document.getElementById("map").scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                    }
+                });
+
+
+            // ==========================================
+            // KHỞI TẠO
+            // ==========================================
+
+            capNhatViTri(viTriMacDinh[0], viTriMacDinh[1]);
+            capNhatGiaoDienHoTro();
+
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 200);
+
+
+    </script>
+
+</body>
+</html>

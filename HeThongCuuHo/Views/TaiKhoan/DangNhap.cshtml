@@ -8,11 +8,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Nha Trang Rescue - Đăng nhập</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>NHA TRANG RESCUE | Đăng nhập</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
             * {
@@ -22,8 +23,10 @@
             body {
                 margin: 0;
                 min-height: 100vh;
+                background: #f5f6fa;
+                color: #252b36;
                 font-family: 'Inter', sans-serif;
-                background: #f4f6fa;
+                font-size: 13px;
             }
 
             .login-container {
@@ -33,223 +36,288 @@
                 gap: 24px;
             }
 
+            /* LEFT PANEL */
             .left-panel {
                 position: relative;
                 width: 55%;
                 min-height: calc(100vh - 48px);
                 overflow: hidden;
-                border-radius: 20px;
+                border-radius: 16px;
                 background: #182638;
             }
 
                 .left-panel img {
                     position: absolute;
+                    inset: 0;
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    inset: 0;
-                    filter: blur(3px);
+                    filter: blur(2px);
                     transform: scale(1.03);
-                    z-index: 0;
                 }
 
             .image-overlay {
                 position: absolute;
                 inset: 0;
-                background: linear-gradient( 180deg, rgba(8, 20, 35, 0.25), rgba(8, 20, 35, 0.88) );
-                z-index: 1;
+                background: linear-gradient( 180deg, rgba(24, 38, 56, .45), rgba(24, 38, 56, .95) );
             }
 
             .brand {
                 position: absolute;
-                top: 38px;
-                left: 42px;
+                top: 32px;
+                left: 35px;
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 11px;
                 color: white;
-                font-size: 19px;
-                font-weight: 800;
-                letter-spacing: 0.5px;
                 z-index: 2;
             }
 
             .brand-icon {
-                width: 44px;
-                height: 44px;
+                width: 42px;
+                height: 42px;
+                background: #e53935;
+                border-radius: 10px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border-radius: 12px;
-                background: #e53935;
-                font-size: 23px;
+                font-size: 19px;
             }
+
+            .brand-name {
+                font-size: 15px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                line-height: 1.4;
+            }
+
+                .brand-name span {
+                    display: block;
+                    font-size: 9px;
+                    color: #aab7c8;
+                    letter-spacing: 1.5px;
+                    font-weight: 600;
+                }
 
             .intro-content {
                 position: absolute;
-                left: 55px;
-                right: 55px;
-                bottom: 75px;
+                left: 45px;
+                right: 45px;
+                bottom: 65px;
                 color: white;
                 z-index: 2;
             }
 
             .intro-tag {
-                display: inline-block;
-                padding: 8px 14px;
-                margin-bottom: 22px;
-                border: 1px solid rgba(255,255,255,0.35);
-                border-radius: 30px;
-                background: rgba(255,255,255,0.12);
-                font-size: 12px;
-                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 13px;
+                margin-bottom: 20px;
+                border-radius: 7px;
+                background: rgba(255,255,255,.15);
+                border: 1px solid rgba(255,255,255,.2);
+                font-size: 10px;
+                font-weight: 700;
                 letter-spacing: 1px;
             }
 
             .intro-content h1 {
-                max-width: 600px;
-                font-size: clamp(30px, 3.5vw, 48px);
-                line-height: 1.2;
+                max-width: 550px;
+                font-size: clamp(30px, 3.5vw, 45px);
                 font-weight: 800;
-                margin-bottom: 20px;
+                line-height: 1.25;
+                margin-bottom: 17px;
             }
 
             .intro-content p {
-                max-width: 500px;
-                color: #d5dce5;
-                font-size: 15px;
-                line-height: 1.8;
+                max-width: 480px;
+                color: #c2ccda;
+                font-size: 12px;
+                line-height: 1.9;
+                margin: 0;
             }
 
+            /* RIGHT PANEL */
             .right-panel {
                 flex: 1;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding: 35px;
+                padding: 30px;
             }
 
             .login-form {
                 width: 100%;
-                max-width: 420px;
+                max-width: 400px;
+            }
+
+            .form-icon {
+                width: 55px;
+                height: 55px;
+                border-radius: 13px;
+                background: #fdebea;
+                color: #e53935;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                margin-bottom: 23px;
             }
 
             .form-heading {
-                margin-bottom: 35px;
+                margin-bottom: 30px;
             }
 
-                .form-heading .small-title {
-                    color: #e53935;
-                    font-size: 13px;
-                    font-weight: 700;
-                    letter-spacing: 1.5px;
-                    text-transform: uppercase;
-                    margin-bottom: 12px;
-                }
+            .small-title {
+                color: #e53935;
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 1.5px;
+                margin-bottom: 10px;
+            }
 
-                .form-heading h2 {
-                    color: #172334;
-                    font-size: 32px;
-                    font-weight: 800;
-                    margin-bottom: 12px;
-                }
+            .form-heading h2 {
+                color: #252b36;
+                font-size: 27px;
+                font-weight: 800;
+                margin-bottom: 10px;
+            }
 
-                .form-heading p {
-                    color: #7b8492;
-                    font-size: 14px;
-                    line-height: 1.7;
-                }
+            .form-heading p {
+                color: #929baa;
+                font-size: 12px;
+                line-height: 1.8;
+                margin: 0;
+            }
 
             .form-label {
                 color: #344054;
-                font-size: 13px;
-                font-weight: 600;
+                font-size: 11px;
+                font-weight: 700;
                 margin-bottom: 9px;
             }
 
+            .input-wrapper {
+                position: relative;
+            }
+
+                .input-wrapper i {
+                    position: absolute;
+                    left: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #929baa;
+                    font-size: 13px;
+                }
+
             .form-control {
-                height: 52px;
-                padding: 12px 15px;
-                border: 1px solid #dce1e8;
+                height: 49px;
+                padding: 12px 15px 12px 42px;
+                border: 1px solid #edf0f4;
                 border-radius: 9px;
-                font-size: 14px;
-                box-shadow: none;
+                background: white;
+                font-size: 12px;
+                box-shadow: 0 3px 12px rgba(0,0,0,.025);
             }
 
                 .form-control:focus {
                     border-color: #e53935;
-                    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+                    box-shadow: 0 0 0 3px rgba(229,57,53,.1);
                 }
 
-            .password-wrapper {
-                position: relative;
+            .password-wrapper .form-control {
+                padding-right: 65px;
             }
-
-                .password-wrapper .form-control {
-                    padding-right: 55px;
-                }
 
             .toggle-password {
                 position: absolute;
                 top: 50%;
-                right: 15px;
+                right: 14px;
                 transform: translateY(-50%);
                 border: none;
                 background: transparent;
-                color: #7b8492;
-                font-size: 12px;
-                font-weight: 600;
+                color: #929baa;
+                font-size: 10px;
+                font-weight: 700;
+                cursor: pointer;
             }
+
+                .toggle-password:hover {
+                    color: #e53935;
+                }
 
             .btn-login {
                 width: 100%;
-                height: 52px;
+                height: 49px;
                 margin-top: 12px;
                 border: none;
                 border-radius: 9px;
                 background: #e53935;
                 color: white;
-                font-size: 14px;
-                font-weight: 700;
-                transition: 0.2s;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: .5px;
+                transition: .2s;
             }
 
                 .btn-login:hover {
                     background: #c62828;
-                    transform: translateY(-1px);
-                    box-shadow: 0 6px 15px rgba(229, 57, 53, 0.2);
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 18px rgba(229,57,53,.2);
                 }
 
-            .login-footer {
-                margin-top: 35px;
-                color: #98a1ad;
+            .register-link {
+                margin-top: 22px;
                 text-align: center;
-                font-size: 12px;
+                color: #929baa;
+                font-size: 11px;
             }
+
+                .register-link a {
+                    color: #e53935;
+                    font-weight: 800;
+                    text-decoration: none;
+                    margin-left: 4px;
+                }
+
+                    .register-link a:hover {
+                        color: #c62828;
+                        text-decoration: underline;
+                    }
 
             .alert {
-                font-size: 13px;
                 border-radius: 9px;
+                font-size: 12px;
+                padding: 12px 14px;
             }
 
+            .login-footer {
+                margin-top: 45px;
+                color: #a0a8b4;
+                text-align: center;
+                font-size: 10px;
+            }
+
+            /* RESPONSIVE */
             @@media (max-width: 900px) {
                 .login-container {
                     padding: 15px;
+                    gap: 15px;
                 }
 
                 .left-panel {
                     width: 45%;
                 }
 
-                .intro-content {
-                    left: 30px;
-                    right: 30px;
-                    bottom: 45px;
+                .brand {
+                    left: 25px;
                 }
 
-                .brand {
-                    left: 30px;
-                    top: 25px;
+                .intro-content {
+                    left: 25px;
+                    right: 25px;
+                    bottom: 40px;
                 }
 
                 .right-panel {
@@ -272,47 +340,43 @@
                 }
 
                 .form-heading h2 {
-                    font-size: 28px;
+                    font-size: 25px;
                 }
-
-                .register-link {
-                    margin-top: 22px;
-                    text-align: center;
-                    font-size: 13px;
-                    color: #7b8492;
-                }
-
-                    .register-link a {
-                        color: #e53935;
-                        font-weight: 700;
-                        text-decoration: none;
-                        margin-left: 4px;
-                    }
-
-                        .register-link a:hover {
-                            color: #c62828;
-                            text-decoration: underline;
-                        }
             }
     </style>
 </head>
 
 <body>
+
     <div class="login-container">
 
+        <!-- LEFT PANEL -->
         <div class="left-panel">
+
             <img src="/img/paintless-dent-repair%20(1).jpeg"
                  alt="Dịch vụ sửa chữa xe" />
 
             <div class="image-overlay"></div>
 
             <div class="brand">
-                <div class="brand-icon">✚</div>
-                <span>NHA TRANG RESCUE</span>
+
+                <div class="brand-icon">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+
+                <div class="brand-name">
+                    NHA TRANG RESCUE
+                    <span>GARAGE MANAGEMENT</span>
+                </div>
+
             </div>
 
             <div class="intro-content">
-                <div class="intro-tag">HỖ TRỢ CỨU HỘ 24/7</div>
+
+                <div class="intro-tag">
+                    <i class="fa-solid fa-clock"></i>
+                    HỖ TRỢ CỨU HỘ 24/7
+                </div>
 
                 <h1>Đồng hành cùng bạn trên mọi hành trình.</h1>
 
@@ -321,45 +385,72 @@
                     kết nối khách hàng với các cửa hàng sửa chữa và đội ngũ cứu hộ
                     nhanh chóng, thuận tiện và hiệu quả.
                 </p>
+
             </div>
+
         </div>
 
+        <!-- RIGHT PANEL -->
         <div class="right-panel">
+
             <div class="login-form">
 
+                <div class="form-icon">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+
                 <div class="form-heading">
-                    <div class="small-title">Chào mừng trở lại</div>
+
+                    <div class="small-title">CHÀO MỪNG TRỞ LẠI</div>
+
                     <h2>Đăng nhập</h2>
+
                     <p>
                         Vui lòng nhập thông tin tài khoản để truy cập
                         hệ thống Nha Trang Rescue.
                     </p>
+
                 </div>
 
                 @if (ViewBag.Loi != null)
                 {
                     <div class="alert alert-danger">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
                         @ViewBag.Loi
                     </div>
                 }
 
                 <form action="/TaiKhoan/DangNhap" method="post">
+
                     @Html.AntiForgeryToken()
 
                     <div class="mb-4">
+
                         <label class="form-label">Tên đăng nhập</label>
-                        <input type="text"
-                               name="tenDangNhap"
-                               class="form-control"
-                               placeholder="Nhập tên đăng nhập"
-                               autocomplete="username"
-                               required />
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <input type="text"
+                                   name="tenDangNhap"
+                                   class="form-control"
+                                   placeholder="Nhập tên đăng nhập"
+                                   autocomplete="username"
+                                   required />
+
+                        </div>
+
                     </div>
 
                     <div class="mb-3">
+
                         <label class="form-label">Mật khẩu</label>
 
-                        <div class="password-wrapper">
+                        <div class="input-wrapper password-wrapper">
+
+                            <i class="fa-solid fa-lock"></i>
+
                             <input type="password"
                                    id="matKhau"
                                    name="matKhau"
@@ -373,10 +464,13 @@
                                     onclick="togglePassword()">
                                 HIỆN
                             </button>
+
                         </div>
+
                     </div>
 
                     <button type="submit" class="btn-login">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i>
                         ĐĂNG NHẬP
                     </button>
 
@@ -388,10 +482,11 @@
                 </form>
 
                 <div class="login-footer">
-                    © 2026 Nha Trang Rescue. All rights reserved.
+                    NHA TRANG RESCUE © 2026
                 </div>
 
             </div>
+
         </div>
 
     </div>
@@ -410,5 +505,6 @@
                 }
             }
     </script>
+
 </body>
 </html>

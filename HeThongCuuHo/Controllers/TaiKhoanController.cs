@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+
 namespace HeThongCuuHo.Controllers
 {
     public class TaiKhoanController : Controller
@@ -59,7 +60,26 @@ namespace HeThongCuuHo.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
 
-            return RedirectToAction("Index", "Home");
+            switch (taiKhoan.VaiTro)
+            {
+                case "Admin":
+                    return RedirectToAction("Index", "Admin");
+
+                case "KhachHang":
+                    return RedirectToAction("Index", "KhachHang");
+
+                case "NhanVien":
+                    return RedirectToAction("Index", "NhanVien");
+
+                case "ChuCuaHang":
+                    return RedirectToAction("Index", "QuanLyCuaHang");
+
+                default:
+                    await HttpContext.SignOutAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    return RedirectToAction("DangNhap");
+            }
         }
 
         [HttpPost]
@@ -143,6 +163,7 @@ namespace HeThongCuuHo.Controllers
                 return View(model);
             }
         }
+
     }
 }
 
